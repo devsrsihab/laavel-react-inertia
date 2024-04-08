@@ -1,9 +1,10 @@
-import {Link, router} from "@inertiajs/react";
+import {Link} from "@inertiajs/react";
+import Pagination from "@/Components/Pagination.jsx";
 
 const ProjectTable = ({projects}) => {
     return (
         <div className="py-10">
-            <div className="mx-auto mt-8 max-w-screen-lg px-2">
+            <div className="mx-auto mt-8  px-2">
                 <div className="sm:flex sm:items-center sm:justify-between flex-col sm:flex-row">
                     <p className="flex-1 text-base font-bold  text-white">
                         Latest Payments
@@ -53,7 +54,6 @@ const ProjectTable = ({projects}) => {
                         <thead className="hidden border-b lg:table-header-group">
                         <tr className="text-white">
                             <td
-                                width="50%"
                                 className="whitespace-normal py-4 text-sm font-medium  sm:px-6">
                                 ID
                             </td>
@@ -96,10 +96,13 @@ const ProjectTable = ({projects}) => {
                                     {project.status}
                                 </td>
                                 <td className="whitespace-no-wrap hidden py-4 text-sm font-normal sm:px-6 lg:table-cell">
+                                    {project.created_at}
+                                </td>
+                                <td className="whitespace-no-wrap hidden py-4 text-sm font-normal sm:px-6 lg:table-cell">
                                     {project.due_date}
                                 </td>
                                 <td className="whitespace-no-wrap hidden py-4 text-sm font-normal sm:px-6 lg:table-cell">
-                                    {project.created_by }
+                                    {project.createdBy.name }
                                 </td>
                                 <td className="whitespace-no-wrap py-4 px-6 text-right text-sm  lg:text-left">
                                     $59.00
@@ -127,6 +130,8 @@ const ProjectTable = ({projects}) => {
 
                         </tbody>
                     </table>
+                {/*  pagination  */}
+                 <Pagination links={projects.meta.links} />
                 </div>
             </div>
         </div>
