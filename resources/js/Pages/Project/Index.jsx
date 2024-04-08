@@ -1,7 +1,8 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import {Head} from "@inertiajs/react";
+import ProjectTable from "@/Components/Project/ProjectTable.jsx";
 
-const Index = ({auth}) => {
+const Index = ({auth,projects}) => {
     return <>
         <AuthenticatedLayout
             user={auth.user}
@@ -13,6 +14,8 @@ const Index = ({auth}) => {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 text-gray-900 dark:text-gray-100">See Your Projects</div>
+                        <ProjectTable projects={projects} >
+                        </ProjectTable>
                     </div>
                 </div>
             </div>
