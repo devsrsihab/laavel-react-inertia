@@ -1,7 +1,32 @@
-import {Link} from "@inertiajs/react";
+import {Link, router} from "@inertiajs/react";
 import Pagination from "@/Components/Pagination.jsx";
+import {PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP} from "@/constants.jsx";
+import TextInput from "@/Components/TextInput.jsx";
+import SelectInput from "@/Components/SelectInput.jsx";
 
-const ProjectTable = ({projects}) => {
+const ProjectTable = ({projects,queryParams}) => {
+     queryParams = queryParams || {}
+    console.log(queryParams.name)
+    console.log(queryParams.status)
+     const handleSearchFieldChanged = (name,value) => {
+         console.log(value)
+         if (value){
+             queryParams[name] = value
+         } else {
+             delete queryParams[name]
+         }
+
+         // inertia router
+          router.get(route("projects.index"), queryParams);
+     }
+
+    const handleOnkeypress = (name, e) => {
+         if(e.key !== 'Enter') return false ;
+
+        handleSearchFieldChanged(name, e.target.value)
+    }
+
+
     return (
         <div className="py-10">
             <div className="mx-auto mt-8  px-2">
@@ -9,50 +34,11 @@ const ProjectTable = ({projects}) => {
                     <p className="flex-1 text-base font-bold  text-white">
                         Latest Payments
                     </p>
-                    <div className="mt-4 sm:mt-0">
-                        <div className="flex items-center justify-start sm:justify-end">
-                            <div className="flex items-center">
-                                <label
-                                    htmlFor=""
-                                    className="mr-2 flex-shrink-0 text-sm font-medium text-white"
-                                >
-                                    Sort by:
-                                </label>
-                                <select
-                                    name=""
-                                    className="sm: mr-4 block w-full whitespace-pre rounded-lg border p-1 pr-10 text-base outline-none focus:shadow sm:text-sm"
-                                >
-                                    <option className="whitespace-no-wrap text-sm">Recent</option>
-                                </select>
-                            </div>
-                            <button
-                                type="button"
-                                className="inline-flex cursor-pointer items-center rounded-lg border border-gray-400 bg-white py-2 px-3 text-center text-sm font-medium text-gray-800 shadow hover:bg-gray-100 focus:shadow"
-                            >
-                                <svg
-                                    className="mr-1 h-4 w-4"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
-                                >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                        className=""
-                                    />
-                                </svg>
-                                Export to CSV
-                            </button>
-                        </div>
-                    </div>
                 </div>
                 <div className="mt-6 overflow-hidden rounded-xl border shadow">
                     <table className="min-w-full border-separate border-spacing-y-2 border-spacing-x-2">
                         <thead className="hidden border-b lg:table-header-group">
-                        <tr className="text-white">
+                          <tr className="text-white">
                             <td
                                 className="whitespace-normal py-4 text-sm font-medium  sm:px-6">
                                 ID
@@ -78,7 +64,50 @@ const ProjectTable = ({projects}) => {
                             <td className="whitespace-normal py-4 text-sm text-right font-medium sm:px-6">
                                 Actions
                             </td>
-                        </tr>
+                         </tr>
+                        </thead>
+                        <thead className="hidden border-b lg:table-header-group">
+                          <tr className="text-white">
+                            <td
+                                className="whitespace-normal py-4 text-sm font-medium  sm:px-6">
+
+                            </td>
+                            <td className="whitespace-normal py-4 text-sm font-medium  sm:px-6">
+
+                            </td>
+                            <td className="whitespace-normal py-4 text-sm font-medium  sm:px-6">
+                                <TextInput
+                                    className="w-full"
+                                    defaultValue = {queryParams.name}
+                                    placeholder="Search by Name"
+                                    onBlur={ e => handleSearchFieldChanged('name', e.target.value) }
+                                    onKeyPress={e => handleOnkeypress('name',e)}
+                                />
+                            </td>
+                            <td className="whitespace-normal py-4 text-sm font-medium sm:px-6">
+                                <SelectInput className="w-full"
+                                defaultValue = {queryParams.status}
+                                onChange={ (e) => handleSearchFieldChanged("status", e.target.value)}
+                                >
+                                    <option value="select">Select Status</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="in_progress">In Progress</option>
+                                    <option value="completed">Completed</option>
+                                </SelectInput>
+                            </td>
+                            <td className="whitespace-normal py-4 text-sm font-medium sm:px-6">
+
+                            </td>
+                            <td className="whitespace-normal py-4 text-sm font-medium sm:px-6">
+
+                            </td>
+                            <td className="whitespace-normal py-4 text-sm font-medium sm:px-6">
+
+                            </td>
+                            <td className="whitespace-normal py-4 text-sm text-right font-medium sm:px-6">
+
+                            </td>
+                         </tr>
                         </thead>
                         <tbody className="lg:border-gray-300">
                         { projects?.data?.map((project) => (
@@ -93,7 +122,13 @@ const ProjectTable = ({projects}) => {
                                     {project.name}
                                 </td>
                                 <td className="whitespace-no-wrap hidden py-4 text-sm font-normal sm:px-6 lg:table-cell">
-                                    {project.status}
+                                   <span className={
+                                       "px-2 py-1 rounded text-white " +
+                                       PROJECT_STATUS_CLASS_MAP[project.status]
+                                   }>
+
+                                    {PROJECT_STATUS_TEXT_MAP[project.status]}
+                                   </span>
                                 </td>
                                 <td className="whitespace-no-wrap hidden py-4 text-sm font-normal sm:px-6 lg:table-cell">
                                     {project.created_at}
@@ -103,13 +138,6 @@ const ProjectTable = ({projects}) => {
                                 </td>
                                 <td className="whitespace-no-wrap hidden py-4 text-sm font-normal sm:px-6 lg:table-cell">
                                     {project.createdBy.name }
-                                </td>
-                                <td className="whitespace-no-wrap py-4 px-6 text-right text-sm  lg:text-left">
-                                    $59.00
-                                    <div
-                                        className="flex mt-1 ml-auto w-fit items-center rounded-full bg-blue-600 py-2 px-3 text-left text-xs font-medium text-white lg:hidden">
-                                        Complete
-                                    </div>
                                 </td>
                                 <td className="whitespace-no-wrap hidden py-4 text-sm font-normal text-gray-500 sm:px-6 lg:table-cell">
                                    <Link
